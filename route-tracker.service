@@ -1,0 +1,17 @@
+[Unit]
+Description=RouteTracker Next.js app
+After=network.target
+
+[Service]
+Type=simple
+User=routetracker
+WorkingDirectory=/opt/route-tracker
+ExecStart=/usr/bin/node node_modules/.bin/next start -p 3000
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+EnvironmentFile=/opt/route-tracker/.env.local
+
+[Install]
+WantedBy=multi-user.target
