@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getRouteConfigs } from "@/lib/types"
 import { fetchRouteData } from "@/lib/google-routes"
-import { appendEntry } from "@/lib/storage"
+import { appendEntry, getMonthlyCallCount, incrementMonthlyCallCount, MONTHLY_BUDGET } from "@/lib/storage"
 
 // This endpoint is called by the external cron job (crontab / systemd timer)
-// every 10 minutes Mon–Fri 04:50–20:00.
+// every 15 minutes Mon–Fri 05:45–19:00.
 // Protect it with a shared secret so it can't be triggered by random requests.
 
 export async function POST(req: NextRequest) {
@@ -22,6 +22,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ skipped: "weekend" })
   }
 
+  // Stop collecting when monthly API budget is exhausted
+  if (getMonthlyCallCount(now) >= MONTHLY_BUDGET) {
+    return NextResponse.json({ skipped: "budget_exhausted" })
+  }
+
   const configs = getRouteConfigs()
   const results: Array<{ route: string; status: string; error?: string }> = []
 
@@ -36,6 +41,7 @@ export async function POST(req: NextRequest) {
       const entry = await fetchRouteData(config, now)
       if (entry) {
         appendEntry(entry)
+        incrementMonthlyCallCount(now)
         results.push({ route: config.id, status: "ok" })
       } else {
         results.push({ route: config.id, status: "no_data" })

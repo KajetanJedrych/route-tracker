@@ -31,7 +31,7 @@ export function getRouteConfigs(): RouteConfig[] {
       originLng: parseFloat(process.env.ROUTE_1_ORIGIN_LNG ?? "21.0122"),
       destLat: parseFloat(process.env.ROUTE_1_DEST_LAT ?? "52.4064"),
       destLng: parseFloat(process.env.ROUTE_1_DEST_LNG ?? "16.9252"),
-      collectFromHour: 5,
+      collectFromHour: 6,
       collectToHour: 12,
     },
     {
@@ -41,8 +41,8 @@ export function getRouteConfigs(): RouteConfig[] {
       originLng: parseFloat(process.env.ROUTE_2_ORIGIN_LNG ?? "16.9252"),
       destLat: parseFloat(process.env.ROUTE_2_DEST_LAT ?? "52.2297"),
       destLng: parseFloat(process.env.ROUTE_2_DEST_LNG ?? "21.0122"),
-      collectFromHour: 12,
-      collectToHour: 20,
+      collectFromHour: 14,
+      collectToHour: 19,
     },
   ]
 }
