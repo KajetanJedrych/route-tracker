@@ -3,6 +3,8 @@ import path from "path"
 import { RouteEntry } from "./types"
 
 const DATA_DIR = path.join(process.cwd(), "data")
+const BUDGET_FILE = path.join(DATA_DIR, "budget.json")
+export const MONTHLY_BUDGET = 1000
 
 function ensureDataDir() {
   if (!fs.existsSync(DATA_DIR)) {
@@ -12,6 +14,31 @@ function ensureDataDir() {
 
 function filePath(routeId: "route1" | "route2"): string {
   return path.join(DATA_DIR, `${routeId}.json`)
+}
+
+function budgetKey(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`
+}
+
+function readBudget(): Record<string, number> {
+  ensureDataDir()
+  if (!fs.existsSync(BUDGET_FILE)) return {}
+  try {
+    return JSON.parse(fs.readFileSync(BUDGET_FILE, "utf-8"))
+  } catch {
+    return {}
+  }
+}
+
+export function getMonthlyCallCount(date: Date): number {
+  return readBudget()[budgetKey(date)] ?? 0
+}
+
+export function incrementMonthlyCallCount(date: Date): void {
+  const budget = readBudget()
+  const key = budgetKey(date)
+  budget[key] = (budget[key] ?? 0) + 1
+  fs.writeFileSync(BUDGET_FILE, JSON.stringify(budget, null, 2), "utf-8")
 }
 
 export function readEntries(routeId: "route1" | "route2"): RouteEntry[] {
