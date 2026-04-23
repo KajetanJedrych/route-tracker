@@ -33,7 +33,7 @@ export async function fetchRouteData(
     },
     travelMode: "DRIVE",
     routingPreference: "TRAFFIC_AWARE_OPTIMAL",
-    departureTime: now.toISOString(),
+    departureTime: new Date(now.getTime() + 2 * 60_000).toISOString(),
   }
 
   const res = await fetch(
