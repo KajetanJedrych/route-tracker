@@ -147,7 +147,7 @@ export default function HomePage() {
             <section>
               <div className="mb-4 flex items-baseline gap-3">
                 <h2 className="text-sm uppercase tracking-[0.2em] text-[#6ee7b7]">Collection log</h2>
-                <span className="text-xs text-[#444]">last 50 raw entries</span>
+                <span className="text-xs text-[#444]">all entries · delay vs 60 min base</span>
               </div>
               <CollectionLog routeId={activeRoute} />
             </section>
