@@ -73,7 +73,7 @@ export async function fetchRouteData(
     minute: now.getMinutes(),
     duration_seconds: durationBase,
     duration_traffic_seconds: durationTraffic,
-    delay_seconds: Math.max(0, durationTraffic - durationBase),
+    delay_seconds: Math.max(0, durationTraffic - 3600),
     distance_meters: route.distanceMeters,
     route: config.id,
   }

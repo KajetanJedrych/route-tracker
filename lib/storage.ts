@@ -89,6 +89,8 @@ export interface DailyAvg {
   count: number
 }
 
+export const BASE_DURATION_SECONDS = 3600
+
 const DAY_NAMES = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 
 export function buildHeatmap(entries: RouteEntry[]): HeatmapCell[] {
@@ -97,7 +99,7 @@ export function buildHeatmap(entries: RouteEntry[]): HeatmapCell[] {
   for (const e of entries) {
     const key = `${e.day_of_week}-${e.hour}`
     const existing = map.get(key) ?? { total: 0, count: 0, dayName: DAY_NAMES[e.day_of_week] }
-    existing.total += e.delay_seconds
+    existing.total += Math.max(0, e.duration_traffic_seconds - BASE_DURATION_SECONDS)
     existing.count += 1
     map.set(key, existing)
   }
@@ -122,7 +124,7 @@ export function buildHourlyAvg(entries: RouteEntry[]): HourlyAvg[] {
 
   for (const e of entries) {
     const existing = map.get(e.hour) ?? { totalDelay: 0, totalTraffic: 0, count: 0 }
-    existing.totalDelay += e.delay_seconds
+    existing.totalDelay += Math.max(0, e.duration_traffic_seconds - BASE_DURATION_SECONDS)
     existing.totalTraffic += e.duration_traffic_seconds
     existing.count += 1
     map.set(e.hour, existing)
@@ -143,7 +145,7 @@ export function buildDailyAvg(entries: RouteEntry[]): DailyAvg[] {
 
   for (const e of entries) {
     const existing = map.get(e.day_of_week) ?? { totalDelay: 0, totalTraffic: 0, count: 0 }
-    existing.totalDelay += e.delay_seconds
+    existing.totalDelay += Math.max(0, e.duration_traffic_seconds - BASE_DURATION_SECONDS)
     existing.totalTraffic += e.duration_traffic_seconds
     existing.count += 1
     map.set(e.day_of_week, existing)
